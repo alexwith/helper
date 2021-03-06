@@ -5,7 +5,11 @@ import me.hyfe.helper.terminable.Terminable;
 import me.hyfe.helper.terminable.TerminableConsumer;
 
 public interface Command extends Terminable {
-    
+
+    String getUsage();
+
+    String getFailureMessage();
+
     void register(String... aliases);
 
     default void registerAndBind(TerminableConsumer consumer, String... aliases) {

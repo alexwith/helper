@@ -7,5 +7,5 @@ import org.bukkit.command.CommandSender;
 @FunctionalInterface
 public interface FunctionalCommandHandler<T extends CommandSender>  {
 
-    void handle(CommandContext<T> c) throws CommandInterruptException;
+    void handle(CommandContext<T> context) throws CommandInterruptException;
 }

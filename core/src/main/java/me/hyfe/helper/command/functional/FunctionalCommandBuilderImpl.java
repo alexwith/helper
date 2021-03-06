@@ -8,30 +8,41 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Predicate;
 
 class FunctionalCommandBuilderImpl<T extends CommandSender> implements FunctionalCommandBuilder<T> {
     private final ImmutableList.Builder<Predicate<CommandContext<?>>> predicates;
-    private String permission;
-    private String permissionMessage;
-    private String description;
+    private final Set<Command> subs = new HashSet<>();
 
-    private FunctionalCommandBuilderImpl(ImmutableList.Builder<Predicate<CommandContext<?>>> predicates, String permission, String permissionMessage, String description) {
+    private String permission;
+    private String usage;
+    private String description;
+    private String permissionMessage;
+    private String failureMessage;
+
+    private FunctionalCommandBuilderImpl(ImmutableList.Builder<Predicate<CommandContext<?>>> predicates, String permission, String usage, String description, String failureMessage, String permissionMessage) {
         this.predicates = predicates;
         this.permission = permission;
-        this.permissionMessage = permissionMessage;
+        this.usage = usage;
         this.description = description;
+        this.permissionMessage = permissionMessage;
+        this.failureMessage = failureMessage;
     }
 
     FunctionalCommandBuilderImpl() {
-        this(ImmutableList.builder(), null, null, null);
+        this(ImmutableList.builder(), null, null, null, null, null);
     }
 
     public FunctionalCommandBuilder<T> description(String description) {
         Objects.requireNonNull(description, "description");
         this.description = description;
+        return this;
+    }
+
+    public FunctionalCommandBuilder<T> bindSubs(Command... commands) {
+        Objects.requireNonNull(commands, "commands");
+        this.subs.addAll(Arrays.asList(commands));
         return this;
     }
 
@@ -75,7 +86,7 @@ class FunctionalCommandBuilderImpl<T extends CommandSender> implements Functiona
             context.reply(failureMessage);
             return false;
         });
-        return new FunctionalCommandBuilderImpl<>(this.predicates, this.permission, this.permissionMessage, this.description);
+        return new FunctionalCommandBuilderImpl<>(this.predicates, this.permission, this.usage, this.description, this.failureMessage, this.permissionMessage);
     }
 
     @Override
@@ -89,33 +100,32 @@ class FunctionalCommandBuilderImpl<T extends CommandSender> implements Functiona
             context.reply(failureMessage);
             return false;
         });
-        return new FunctionalCommandBuilderImpl<>(this.predicates, this.permission, this.permissionMessage, this.description);
+        return new FunctionalCommandBuilderImpl<>(this.predicates, this.permission, this.usage, this.description, this.failureMessage, this.permissionMessage);
     }
 
     @Override
     public FunctionalCommandBuilder<T> assertUsage(String usage, String failureMessage) {
         Objects.requireNonNull(usage, "usage");
         Objects.requireNonNull(failureMessage, "failureMessage");
-
+        this.usage = usage;
+        this.failureMessage = failureMessage;
         List<String> usageParts = Splitter.on(" ").splitToList(usage);
-
+        List<String> flatArgs = new ArrayList<>();
         int requiredArgs = 0;
         for (String usagePart : usageParts) {
             if (!usagePart.startsWith("[") && !usagePart.endsWith("]")) {
                 requiredArgs++;
+                flatArgs.add(usagePart);
             }
         }
 
         int finalRequiredArgs = requiredArgs;
         this.predicates.add(context -> {
-            if (context.args().size() >= finalRequiredArgs) {
+            if (context.args().size() >= finalRequiredArgs && context.args().containsAll(flatArgs)) {
                 return true;
             }
-
-            context.reply(failureMessage.replace("{usage}", "/" + context.label() + " " + usage));
             return false;
         });
-
         return this;
     }
 
@@ -128,7 +138,6 @@ class FunctionalCommandBuilderImpl<T extends CommandSender> implements Functiona
             if (test.test(arg)) {
                 return true;
             }
-
             context.reply(failureMessage.replace("{arg}", arg).replace("{index}", Integer.toString(index)));
             return false;
         });
@@ -154,6 +163,6 @@ class FunctionalCommandBuilderImpl<T extends CommandSender> implements Functiona
     @Override
     public Command handler(FunctionalCommandHandler handler) {
         Objects.requireNonNull(handler, "handler");
-        return new FunctionalCommand(this.predicates.build(), handler, permission, permissionMessage, description);
+        return new FunctionalCommand(this.predicates.build(), this.subs, handler, this.permission, this.usage, this.description, this.failureMessage, this.permissionMessage);
     }
 }

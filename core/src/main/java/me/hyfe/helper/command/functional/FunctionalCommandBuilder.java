@@ -22,6 +22,8 @@ public interface FunctionalCommandBuilder<T extends CommandSender> {
 
     FunctionalCommandBuilder<T> description(String description);
 
+    FunctionalCommandBuilder<T> bindSubs(Command... commands);
+
     FunctionalCommandBuilder<T> assertFunction(Predicate<? super CommandContext<? extends T>> test);
 
     default FunctionalCommandBuilder<T> assertPermission(String permission) {

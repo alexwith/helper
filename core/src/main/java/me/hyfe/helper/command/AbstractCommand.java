@@ -7,11 +7,25 @@ import me.hyfe.helper.utils.CommandMapUtil;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public abstract class AbstractCommand implements Command, CommandExecutor {
+import java.util.Set;
 
+public abstract class AbstractCommand implements Command, CommandExecutor {
+    protected Set<Command> subs;
     protected String permission;
     protected String permissionMessage;
     protected String description;
+    protected String usage;
+    protected String failureMessage;
+
+    @Override
+    public String getUsage() {
+        return this.usage;
+    }
+
+    @Override
+    public String getFailureMessage() {
+        return this.failureMessage;
+    }
 
     @Override
     public void register(String... aliases) {
@@ -27,9 +41,9 @@ public abstract class AbstractCommand implements Command, CommandExecutor {
     public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
         CommandContext<CommandSender> context = new ImmutableCommandContext<>(sender, label, args);
         try {
-            call(context);
-        } catch (CommandInterruptException e) {
-            e.getAction().accept(context.sender());
+            this.call(context);
+        } catch (CommandInterruptException ex) {
+            ex.getAction().accept(context.sender());
         }
         return true;
     }
