@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 
 class FunctionalCommandBuilderImpl<T extends CommandSender> implements FunctionalCommandBuilder<T> {
     private final ImmutableList.Builder<Predicate<CommandContext<?>>> predicates;
-    private final Set<Command> subs = new HashSet<>();
+    private final Set<Command> subs = new LinkedHashSet<>();
 
     private String permission;
     private String usage;
