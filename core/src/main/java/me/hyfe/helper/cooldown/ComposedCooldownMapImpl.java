@@ -35,10 +35,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-import javax.annotation.Nonnull;
-
 class ComposedCooldownMapImpl<I, O> implements ComposedCooldownMap<I, O> {
-
     private final Cooldown base;
     private final LoadingCache<O, Cooldown> cache;
     private final Function<I, O> composeFunction;
@@ -47,7 +44,6 @@ class ComposedCooldownMapImpl<I, O> implements ComposedCooldownMap<I, O> {
         this.base = base;
         this.composeFunction = composeFunction;
         this.cache = CacheBuilder.newBuilder()
-                // remove from the cache 10 seconds after the cooldown expires
                 .expireAfterAccess(base.getTimeout() + 10000L, TimeUnit.MILLISECONDS)
                 .build(new CacheLoader<O, Cooldown>() {
                     @Override
@@ -57,13 +53,11 @@ class ComposedCooldownMapImpl<I, O> implements ComposedCooldownMap<I, O> {
                 });
     }
 
-    @Nonnull
     @Override
     public Cooldown getBase() {
         return this.base;
     }
 
-    @Nonnull
     public Cooldown get(I key) {
         Objects.requireNonNull(key, "key");
         return this.cache.getUnchecked(this.composeFunction.apply(key));
@@ -76,7 +70,6 @@ class ComposedCooldownMapImpl<I, O> implements ComposedCooldownMap<I, O> {
         this.cache.put(key, cooldown);
     }
 
-    @Nonnull
     public Map<O, Cooldown> getAll() {
         return this.cache.asMap();
     }

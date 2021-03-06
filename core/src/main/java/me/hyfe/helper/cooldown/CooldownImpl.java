@@ -26,22 +26,13 @@
 package me.hyfe.helper.cooldown;
 
 import com.google.gson.JsonElement;
-
-import me.lucko.helper.gson.JsonBuilder;
-import me.lucko.helper.utils.annotation.NonnullByDefault;
+import me.hyfe.helper.serialize.JsonBuilder;
 
 import java.util.OptionalLong;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nonnull;
-
-@NonnullByDefault
 class CooldownImpl implements Cooldown {
-
-    // when the last test occurred.
     private long lastTested;
-
-    // the cooldown duration in millis
     private final long timeout;
 
     CooldownImpl(long amount, TimeUnit unit) {
@@ -72,8 +63,7 @@ class CooldownImpl implements Cooldown {
     public CooldownImpl copy() {
         return new CooldownImpl(this.timeout, TimeUnit.MILLISECONDS);
     }
-
-    @Nonnull
+    
     @Override
     public JsonElement serialize() {
         return JsonBuilder.object()

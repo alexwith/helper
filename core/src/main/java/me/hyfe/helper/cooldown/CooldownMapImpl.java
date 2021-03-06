@@ -34,8 +34,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nonnull;
-
 class CooldownMapImpl<T> implements CooldownMap<T> {
 
     private final Cooldown base;
@@ -44,7 +42,6 @@ class CooldownMapImpl<T> implements CooldownMap<T> {
     CooldownMapImpl(Cooldown base) {
         this.base = base;
         this.cache = CacheBuilder.newBuilder()
-                // remove from the cache 10 seconds after the cooldown expires
                 .expireAfterAccess(base.getTimeout() + 10000L, TimeUnit.MILLISECONDS)
                 .build(new CacheLoader<T, Cooldown>() {
                     @Override
@@ -54,13 +51,11 @@ class CooldownMapImpl<T> implements CooldownMap<T> {
                 });
     }
 
-    @Nonnull
     @Override
     public Cooldown getBase() {
         return this.base;
     }
 
-    @Nonnull
     public Cooldown get(T key) {
         Objects.requireNonNull(key, "key");
         return this.cache.getUnchecked(key);
@@ -73,7 +68,6 @@ class CooldownMapImpl<T> implements CooldownMap<T> {
         this.cache.put(key, cooldown);
     }
 
-    @Nonnull
     public Map<T, Cooldown> getAll() {
         return this.cache.asMap();
     }

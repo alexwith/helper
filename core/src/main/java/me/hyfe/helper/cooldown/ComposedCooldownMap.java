@@ -31,60 +31,21 @@ import java.util.OptionalLong;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-import javax.annotation.Nonnull;
-
-/**
- * A self-populating, composed map of cooldown instances
- *
- * @param <I> input type
- * @param <O> internal type
- */
 public interface ComposedCooldownMap<I, O> {
 
-    /**
-     * Creates a new collection with the cooldown properties defined by the base instance
-     *
-     * @param base the cooldown to base off
-     * @return a new collection
-     */
-    @Nonnull
     static <I, O> ComposedCooldownMap<I, O> create(Cooldown base, Function<I, O> composeFunction) {
         Objects.requireNonNull(base, "base");
         Objects.requireNonNull(composeFunction, "composeFunction");
         return new ComposedCooldownMapImpl<>(base, composeFunction);
     }
 
-    /**
-     * Gets the base cooldown
-     *
-     * @return the base cooldown
-     */
-    @Nonnull
     Cooldown getBase();
 
-    /**
-     * Gets the internal cooldown instance associated with the given key.
-     *
-     * <p>The inline Cooldown methods in this class should be used to access the functionality of the cooldown as opposed
-     * to calling the methods directly via the instance returned by this method.</p>
-     *
-     * @param key the key
-     * @return a cooldown instance
-     */
-    @Nonnull
     Cooldown get(I key);
 
     void put(O key, Cooldown cooldown);
 
-    /**
-     * Gets the cooldowns contained within this collection.
-     *
-     * @return the backing map
-     */
-    @Nonnull
     Map<O, Cooldown> getAll();
-
-    /* methods from Cooldown */
 
     default boolean test(I key) {
         return get(key).test();
@@ -110,7 +71,6 @@ public interface ComposedCooldownMap<I, O> {
         return get(key).remainingTime(unit);
     }
 
-    @Nonnull
     default OptionalLong getLastTested(I key) {
         return get(key).getLastTested();
     }
@@ -118,5 +78,4 @@ public interface ComposedCooldownMap<I, O> {
     default void setLastTested(I key, long time) {
         get(key).setLastTested(time);
     }
-
 }

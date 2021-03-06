@@ -30,58 +30,20 @@ import java.util.Objects;
 import java.util.OptionalLong;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nonnull;
-
-/**
- * A self-populating map of cooldown instances
- *
- * @param <T> the type
- */
 public interface CooldownMap<T> {
 
-    /**
-     * Creates a new collection with the cooldown properties defined by the base instance
-     *
-     * @param base the cooldown to base off
-     * @return a new collection
-     */
-    @Nonnull
     static <T> CooldownMap<T> create(Cooldown base) {
         Objects.requireNonNull(base, "base");
         return new CooldownMapImpl<>(base);
     }
 
-    /**
-     * Gets the base cooldown
-     *
-     * @return the base cooldown
-     */
-    @Nonnull
     Cooldown getBase();
 
-    /**
-     * Gets the internal cooldown instance associated with the given key.
-     *
-     * <p>The inline Cooldown methods in this class should be used to access the functionality of the cooldown as opposed
-     * to calling the methods directly via the instance returned by this method.</p>
-     *
-     * @param key the key
-     * @return a cooldown instance
-     */
-    @Nonnull
     Cooldown get(T key);
 
     void put(T key, Cooldown cooldown);
 
-    /**
-     * Gets the cooldowns contained within this collection.
-     *
-     * @return the backing map
-     */
-    @Nonnull
     Map<T, Cooldown> getAll();
-
-    /* methods from Cooldown */
 
     default boolean test(T key) {
         return get(key).test();
@@ -107,7 +69,6 @@ public interface CooldownMap<T> {
         return get(key).remainingTime(unit);
     }
 
-    @Nonnull
     default OptionalLong getLastTested(T key) {
         return get(key).getLastTested();
     }
