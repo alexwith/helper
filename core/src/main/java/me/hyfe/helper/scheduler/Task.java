@@ -38,6 +38,6 @@ public interface Task extends Terminable {
 
     @Override
     default void close() {
-        stop();
+        this.stop();
     }
 }

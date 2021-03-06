@@ -6,10 +6,12 @@ plugins {
 repositories {
     maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
     maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
+    maven { url = uri("https://repo.dmulloy2.net/repository/public/") }
 }
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
+    compileOnly("com.comphenix.protocol:ProtocolLib:4.6.0")
     compileOnly("com.google.guava:guava:30.1-jre")
 }
 
