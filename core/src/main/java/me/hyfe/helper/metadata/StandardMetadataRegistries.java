@@ -71,12 +71,15 @@ final class StandardMetadataRegistries {
         public <K> Map<Player, K> getAllWithKey(MetadataKey<K> key) {
             Objects.requireNonNull(key, "key");
             ImmutableMap.Builder<Player, K> ret = ImmutableMap.builder();
-            this.cache.asMap().forEach((uuid, map) -> map.get(key).ifPresent(t -> {
-                Player player = Bukkit.getPlayer(uuid);
-                if (player != null) {
-                    ret.put(player, t);
+            this.cache.asMap().forEach((uuid, map) -> {
+                K t = map.get(key);
+                if (t != null) {
+                    Player player = Bukkit.getPlayer(uuid);
+                    if (player != null) {
+                        ret.put(player, t);
+                    }
                 }
-            }));
+            });
             return ret.build();
         }
     }
@@ -119,7 +122,12 @@ final class StandardMetadataRegistries {
         public <K> Map<BlockPosition, K> getAllWithKey(MetadataKey<K> key) {
             Objects.requireNonNull(key, "key");
             ImmutableMap.Builder<BlockPosition, K> ret = ImmutableMap.builder();
-            this.cache.asMap().forEach((pos, map) -> map.get(key).ifPresent(t -> ret.put(pos, t)));
+            this.cache.asMap().forEach((pos, map) -> {
+                K t = map.get(key);
+                if (t != null) {
+                    ret.put(pos, t);
+                }
+            });
             return ret.build();
         }
     }
@@ -142,12 +150,15 @@ final class StandardMetadataRegistries {
         public <K> Map<World, K> getAllWithKey(MetadataKey<K> key) {
             Objects.requireNonNull(key, "key");
             ImmutableMap.Builder<World, K> ret = ImmutableMap.builder();
-            this.cache.asMap().forEach((uuid, map) -> map.get(key).ifPresent(t -> {
-                World world = Bukkit.getWorld(uuid);
-                if (world != null) {
-                    ret.put(world, t);
+            this.cache.asMap().forEach((uuid, map) -> {
+                K t = map.get(key);
+                if (t != null) {
+                    World world = Bukkit.getWorld(uuid);
+                    if (world != null) {
+                        ret.put(world, t);
+                    }
                 }
-            }));
+            });
             return ret.build();
         }
     }

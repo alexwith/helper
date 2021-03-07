@@ -13,6 +13,7 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.6.0")
     compileOnly("com.google.guava:guava:30.1-jre")
+    implementation("org.yaml:snakeyaml:1.28");
 }
 
 tasks.processResources {

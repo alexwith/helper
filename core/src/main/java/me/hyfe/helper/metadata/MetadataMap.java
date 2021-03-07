@@ -27,7 +27,6 @@ package me.hyfe.helper.metadata;
 
 import com.google.common.collect.ImmutableMap;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -49,7 +48,7 @@ public interface MetadataMap {
 
     <T> boolean putIfAbsent(MetadataKey<T> key, TransientValue<T> value);
 
-    <T> Optional<T> get(MetadataKey<T> key);
+    <T> T get(MetadataKey<T> key);
 
     <T> boolean ifPresent(MetadataKey<T> key, Consumer<? super T> action);
 
