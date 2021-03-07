@@ -24,38 +24,14 @@ public final class Commands {
     static {
         PARSER_REGISTRY = new SimpleParserRegistry();
 
-        PARSER_REGISTRY.register(String.class, Optional::of);
-        PARSER_REGISTRY.register(Integer.class, (arg) -> Optional.of(Integer.valueOf(arg)));
-        PARSER_REGISTRY.register(Long.class, (arg) -> Optional.of(Long.valueOf(arg)));
-        PARSER_REGISTRY.register(Double.class, (arg) -> Optional.of(Double.valueOf(arg)));
-        PARSER_REGISTRY.register(Boolean.class, arg -> arg.equalsIgnoreCase("true") ? Optional.of(true) : arg.equalsIgnoreCase("false") ? Optional.of(false) : Optional.empty());
-        PARSER_REGISTRY.register(UUID.class, arg -> {
-            try {
-                return Optional.of(FastUUID.parse(arg));
-            } catch (IllegalArgumentException e) {
-                return Optional.empty();
-            }
-        });
-        PARSER_REGISTRY.register(Player.class, (arg) -> {
-            Supplier<Player> parser = () -> {
-                try {
-                    return Bukkit.getPlayer(FastUUID.parse(arg));
-                } catch (IllegalArgumentException e) {
-                    return Bukkit.getPlayerExact(arg);
-                }
-            };
-            return Optional.ofNullable(parser.get());
-        });
-        PARSER_REGISTRY.register(OfflinePlayer.class, arg -> {
-            Supplier<OfflinePlayer> parser = () -> {
-                try {
-                    return Bukkit.getOfflinePlayer(FastUUID.parse(arg));
-                } catch (IllegalArgumentException e) {
-                    return Bukkit.getOfflinePlayer(arg);
-                }
-            };
-            return Optional.ofNullable(parser.get());
-        });
+        PARSER_REGISTRY.register(String.class, (arg) -> arg);
+        PARSER_REGISTRY.register(Integer.class, Integer::parseInt);
+        PARSER_REGISTRY.register(Long.class, Long::parseLong);
+        PARSER_REGISTRY.register(Double.class, Double::parseDouble);
+        PARSER_REGISTRY.register(Boolean.class, arg -> arg.equalsIgnoreCase("true"));
+        PARSER_REGISTRY.register(UUID.class, FastUUID::parse);
+        PARSER_REGISTRY.register(Player.class, Bukkit::getPlayerExact);
+        PARSER_REGISTRY.register(OfflinePlayer.class, Bukkit::getOfflinePlayer);
         PARSER_REGISTRY.register(World.class, Helper::world);
     }
 

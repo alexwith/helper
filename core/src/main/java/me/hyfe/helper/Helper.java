@@ -54,9 +54,7 @@ public final class Helper {
         return server().getWorld(name);
     }
 
-    public static Optional<World> world(String name) {
-        return Optional.ofNullable(worldNullable(name));
+    public static World world(String name) {
+        return worldNullable(name);
     }
-
-
 }

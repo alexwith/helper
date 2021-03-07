@@ -7,15 +7,15 @@ import java.util.function.Function;
 
 public interface ArgumentParser<T> {
 
-    static <T> ArgumentParser<T> of(Function<String, Optional<T>> parseFunction) {
+    static <T> ArgumentParser<T> of(Function<String, T> parseFunction) {
         return parseFunction::apply;
     }
 
-    static <T> ArgumentParser<T> of(Function<String, Optional<T>> parseFunction, Function<String, CommandInterruptException> generateExceptionFunction) {
+    static <T> ArgumentParser<T> of(Function<String, T> parseFunction, Function<String, CommandInterruptException> generateExceptionFunction) {
         return new ArgumentParser<T>() {
 
             @Override
-            public Optional<T> parse(String t) {
+            public T parse(String t) {
                 return parseFunction.apply(t);
             }
 
@@ -26,7 +26,7 @@ public interface ArgumentParser<T> {
         };
     }
 
-    Optional<T> parse(String s);
+    T parse(String s);
 
     default CommandInterruptException generateException(String s) {
         return new CommandInterruptException("&cUnable to parse argument: " + s);
@@ -37,30 +37,30 @@ public interface ArgumentParser<T> {
     }
 
     default T parseOrFail(String s) throws CommandInterruptException {
-        Optional<T> ret = parse(s);
-        if (!ret.isPresent()) {
+        T ret = parse(s);
+        if (ret == null) {
             throw generateException(s);
         }
-        return ret.get();
+        return ret;
     }
 
-    default Optional<T> parse(Argument argument) {
-        return argument.value().flatMap(this::parse);
+    default T parse(Argument argument) {
+        return this.parse(argument.value());
     }
 
     default T parseOrFail(Argument argument) throws CommandInterruptException {
-        Optional<String> value = argument.value();
-        if (!value.isPresent()) {
+        String value = argument.value();
+        if (value == null) {
             throw generateException(argument.index());
         }
-        return parseOrFail(value.get());
+        return parseOrFail(value);
     }
 
     default ArgumentParser<T> thenTry(ArgumentParser<T> other) {
         ArgumentParser<T> first = this;
         return t -> {
-            Optional<T> ret = first.parse(t);
-            return ret.isPresent() ? ret : other.parse(t);
+            T ret = first.parse(t);
+            return ret == null ? other.parse(t) : ret;
         };
     }
 }

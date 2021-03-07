@@ -1,15 +1,12 @@
 package me.hyfe.helper.command.argument;
 
-import java.util.Optional;
-
 public class SimpleArgument implements Argument {
     protected final int index;
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    protected final Optional<String> value;
+    protected final String value;
 
     public SimpleArgument(int index, String value) {
         this.index = index;
-        this.value = Optional.ofNullable(value);
+        this.value = value;
     }
 
     @Override
@@ -18,12 +15,12 @@ public class SimpleArgument implements Argument {
     }
 
     @Override
-    public Optional<String> value() {
+    public String value() {
         return this.value;
     }
 
     @Override
     public boolean isPresent() {
-        return this.value.isPresent();
+        return this.value != null;
     }
 }

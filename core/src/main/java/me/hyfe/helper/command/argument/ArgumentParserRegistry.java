@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface ArgumentParserRegistry {
 
-    <T> Optional<ArgumentParser<T>> find(TypeToken<T> type);
+    <T> ArgumentParser<T> find(TypeToken<T> type);
 
-    default <T> Optional<ArgumentParser<T>> find(Class<T> clazz) {
+    default <T> ArgumentParser<T> find(Class<T> clazz) {
         return find(TypeToken.of(clazz));
     }
 

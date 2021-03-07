@@ -11,13 +11,13 @@ public class SimpleParserRegistry implements ArgumentParserRegistry {
     private final Map<TypeToken<?>, List<ArgumentParser<?>>> parsers = new ConcurrentHashMap<>();
 
     @Override
-    public <T> Optional<ArgumentParser<T>> find(TypeToken<T> type) {
+    public <T> ArgumentParser<T> find(TypeToken<T> type) {
         Objects.requireNonNull(type, "type");
         List<ArgumentParser<?>> parsers = this.parsers.get(type);
         if (parsers == null || parsers.isEmpty()) {
-            return Optional.empty();
+            return null;
         }
-        return Optional.of((ArgumentParser<T>) parsers.get(0));
+        return (ArgumentParser<T>) parsers.get(0);
     }
 
     @Override
