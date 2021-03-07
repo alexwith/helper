@@ -12,8 +12,8 @@ public class LangKey extends ConfigKey<String> {
         super(keysHolder, key);
     }
 
-    public static <U> ConfigKey<U> of(Supplier<KeysHolder> keysHolder, String key) {
-        return new ConfigKey<>(keysHolder, key);
+    public static LangKey ofLang(Supplier<KeysHolder> keysHolder, String key) {
+        return new LangKey(keysHolder, key);
     }
 
     public void send(CommandSender commandSender) {
