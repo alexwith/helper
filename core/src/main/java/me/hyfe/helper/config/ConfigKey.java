@@ -1,23 +1,26 @@
 package me.hyfe.helper.config;
 
+import me.hyfe.helper.internal.LoaderUtils;
+
 import java.util.function.Supplier;
 
 public class ConfigKey<T> implements Supplier<T> {
-    private final Supplier<KeysHolder> keysHolder;
+    private final Class<? extends KeysHolder> keysHolder;
     private final String key;
 
-    public ConfigKey(Supplier<KeysHolder> keysHolder, String key) {
+    public ConfigKey(Class<? extends KeysHolder> keysHolder, String key) {
         this.keysHolder = keysHolder;
         this.key = key;
     }
 
-    public static <U> ConfigKey<U> of(Supplier<KeysHolder> keysHolder, String key) {
+    public static <U> ConfigKey<U> of(Class<? extends KeysHolder> keysHolder, String key) {
         return new ConfigKey<>(keysHolder, key);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T get() {
-        return (T) this.keysHolder.get().getConfig().get(this.key);
+        KeysHolder keysHolder = LoaderUtils.getPlugin().getConfigController().getKeysHolder(this.keysHolder);
+        return (T) keysHolder.getConfig().get(this.key);
     }
 }

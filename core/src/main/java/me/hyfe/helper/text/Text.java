@@ -26,7 +26,7 @@ public class Text {
     }
 
     public static String colorize(String string, Replacer replacer) {
-        return ChatColor.translateAlternateColorCodes('&', replace(string, null));
+        return ChatColor.translateAlternateColorCodes('&', replace(string, replacer));
     }
 
     public static String replace(String string, Replacer replacer) {

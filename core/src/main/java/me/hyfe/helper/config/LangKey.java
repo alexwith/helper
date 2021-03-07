@@ -4,15 +4,13 @@ import me.hyfe.helper.text.Text;
 import me.hyfe.helper.text.replacer.Replacer;
 import org.bukkit.command.CommandSender;
 
-import java.util.function.Supplier;
-
 public class LangKey extends ConfigKey<String> {
 
-    public LangKey(Supplier<KeysHolder> keysHolder, String key) {
+    public LangKey(Class<? extends KeysHolder> keysHolder, String key) {
         super(keysHolder, key);
     }
 
-    public static LangKey ofLang(Supplier<KeysHolder> keysHolder, String key) {
+    public static LangKey ofLang(Class<? extends KeysHolder> keysHolder, String key) {
         return new LangKey(keysHolder, key);
     }
 
