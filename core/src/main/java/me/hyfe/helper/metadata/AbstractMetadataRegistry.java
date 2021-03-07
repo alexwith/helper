@@ -30,7 +30,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public class AbstractMetadataRegistry<T> implements MetadataRegistry<T> {
     private static final CacheLoader<?, MetadataMap> LOADER = new Loader<>();
@@ -48,9 +47,9 @@ public class AbstractMetadataRegistry<T> implements MetadataRegistry<T> {
     }
 
     @Override
-    public Optional<MetadataMap> get(T id) {
+    public MetadataMap get(T id) {
         Objects.requireNonNull(id, "id");
-        return Optional.ofNullable(this.cache.getIfPresent(id));
+        return this.cache.getIfPresent(id);
     }
 
     @Override

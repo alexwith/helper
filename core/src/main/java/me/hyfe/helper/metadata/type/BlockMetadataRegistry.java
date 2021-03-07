@@ -32,13 +32,12 @@ import me.hyfe.helper.serialize.BlockPosition;
 import org.bukkit.block.Block;
 
 import java.util.Map;
-import java.util.Optional;
 
 public interface BlockMetadataRegistry extends MetadataRegistry<BlockPosition> {
 
     MetadataMap provide(Block block);
 
-    Optional<MetadataMap> get(Block block);
+    MetadataMap get(Block block);
 
     <K> Map<BlockPosition, K> getAllWithKey(MetadataKey<K> key);
 }

@@ -39,7 +39,6 @@ import org.bukkit.entity.Player;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 final class StandardMetadataRegistries {
@@ -63,7 +62,7 @@ final class StandardMetadataRegistries {
         }
 
         @Override
-        public Optional<MetadataMap> get(Player player) {
+        public MetadataMap get(Player player) {
             Objects.requireNonNull(player, "player");
             return get(player.getUniqueId());
         }
@@ -91,7 +90,7 @@ final class StandardMetadataRegistries {
         }
 
         @Override
-        public Optional<MetadataMap> get(Entity entity) {
+        public MetadataMap get(Entity entity) {
             Objects.requireNonNull(entity, "entity");
             return get(entity.getUniqueId());
         }
@@ -111,7 +110,7 @@ final class StandardMetadataRegistries {
         }
 
         @Override
-        public Optional<MetadataMap> get(Block block) {
+        public MetadataMap get(Block block) {
             Objects.requireNonNull(block, "block");
             return get(BlockPosition.of(block));
         }
@@ -134,7 +133,7 @@ final class StandardMetadataRegistries {
         }
 
         @Override
-        public Optional<MetadataMap> get(World world) {
+        public MetadataMap get(World world) {
             Objects.requireNonNull(world, "world");
             return get(world.getUID());
         }

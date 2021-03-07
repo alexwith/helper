@@ -31,14 +31,13 @@ import me.hyfe.helper.metadata.MetadataRegistry;
 import org.bukkit.World;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface WorldMetadataRegistry extends MetadataRegistry<UUID> {
 
     MetadataMap provide(World world);
 
-    Optional<MetadataMap> get(World world);
+    MetadataMap get(World world);
 
     <K> Map<World, K> getAllWithKey(MetadataKey<K> key);
 }

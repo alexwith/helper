@@ -104,7 +104,7 @@ public final class Metadata {
         }
     }
 
-    public static Optional<MetadataMap> get(Object obj) {
+    public static MetadataMap get(Object obj) {
         Objects.requireNonNull(obj, "obj");
         if (obj instanceof Player) {
             return getForPlayer(((Player) obj));
@@ -129,11 +129,11 @@ public final class Metadata {
         return players().provide(player);
     }
 
-    public static Optional<MetadataMap> getForPlayer(UUID uuid) {
+    public static MetadataMap getForPlayer(UUID uuid) {
         return players().get(uuid);
     }
 
-    public static Optional<MetadataMap> getForPlayer(Player player) {
+    public static MetadataMap getForPlayer(Player player) {
         return players().get(player);
     }
 
@@ -149,11 +149,11 @@ public final class Metadata {
         return entities().provide(entity);
     }
 
-    public static Optional<MetadataMap> getForEntity(UUID uuid) {
+    public static MetadataMap getForEntity(UUID uuid) {
         return entities().get(uuid);
     }
 
-    public static Optional<MetadataMap> getForEntity(Entity entity) {
+    public static MetadataMap getForEntity(Entity entity) {
         return entities().get(entity);
     }
 
@@ -169,11 +169,11 @@ public final class Metadata {
         return blocks().provide(block);
     }
 
-    public static Optional<MetadataMap> getForBlock(BlockPosition block) {
+    public static MetadataMap getForBlock(BlockPosition block) {
         return blocks().get(block);
     }
 
-    public static Optional<MetadataMap> getForBlock(Block block) {
+    public static MetadataMap getForBlock(Block block) {
         return blocks().get(block);
     }
 
@@ -189,11 +189,11 @@ public final class Metadata {
         return worlds().provide(world);
     }
 
-    public static Optional<MetadataMap> getForWorld(UUID uid) {
+    public static MetadataMap getForWorld(UUID uid) {
         return worlds().get(uid);
     }
 
-    public static Optional<MetadataMap> getForWorld(World world) {
+    public static MetadataMap getForWorld(World world) {
         return worlds().get(world);
     }
 

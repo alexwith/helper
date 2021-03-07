@@ -32,14 +32,13 @@ import me.hyfe.helper.metadata.MetadataRegistry;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface PlayerMetadataRegistry extends MetadataRegistry<UUID> {
 
     MetadataMap provide(Player player);
 
-    Optional<MetadataMap> get(Player player);
+    MetadataMap get(Player player);
 
     <K> Map<Player, K> getAllWithKey(MetadataKey<K> key);
 }

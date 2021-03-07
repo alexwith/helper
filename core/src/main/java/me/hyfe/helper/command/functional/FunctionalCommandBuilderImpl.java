@@ -111,17 +111,13 @@ class FunctionalCommandBuilderImpl<T extends CommandSender> implements Functiona
         this.failureMessage = failureMessage;
         List<String> usageParts = Splitter.on(" ").splitToList(usage);
         List<String> flatArgs = new ArrayList<>();
-        int requiredArgs = 0;
         for (String usagePart : usageParts) {
             if (!usagePart.startsWith("[") && !usagePart.endsWith("]")) {
-                requiredArgs++;
                 flatArgs.add(usagePart);
             }
         }
-
-        int finalRequiredArgs = requiredArgs;
         this.predicates.add(context -> {
-            if (context.args().size() >= finalRequiredArgs && context.args().containsAll(flatArgs)) {
+            if (context.args().size() >= usageParts.size() && context.args().containsAll(flatArgs)) {
                 return true;
             }
             return false;

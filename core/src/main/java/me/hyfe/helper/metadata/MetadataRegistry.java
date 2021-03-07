@@ -25,13 +25,11 @@
 
 package me.hyfe.helper.metadata;
 
-import java.util.Optional;
-
 public interface MetadataRegistry<T> {
 
     MetadataMap provide(T id);
 
-    Optional<MetadataMap> get(T id);
+    MetadataMap get(T id);
 
     void remove(T id);
 
