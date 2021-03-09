@@ -1,8 +1,7 @@
-package me.hyfe.helper.command.argument;
+package me.hyfe.helper.oldcommand.argument;
 
-import me.hyfe.helper.command.CommandInterruptException;
+import me.hyfe.helper.oldcommand.CommandInterruptException;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 public interface ArgumentParser<T> {

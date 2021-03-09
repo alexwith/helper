@@ -1,9 +1,10 @@
-package me.hyfe.helper.command.functional;
+package me.hyfe.helper.oldcommand.functional;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import me.hyfe.helper.command.Command;
-import me.hyfe.helper.command.context.CommandContext;
+import com.google.common.collect.Sets;
+import me.hyfe.helper.oldcommand.Command;
+import me.hyfe.helper.oldcommand.context.CommandContext;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -14,24 +15,23 @@ import java.util.function.Predicate;
 class FunctionalCommandBuilderImpl<T extends CommandSender> implements FunctionalCommandBuilder<T> {
     private final ImmutableList.Builder<Predicate<CommandContext<?>>> predicates;
     private final Set<Command> subs = new LinkedHashSet<>();
+    private final Set<String> help = Sets.newLinkedHashSet();
 
     private String permission;
     private String usage;
     private String description;
     private String permissionMessage;
-    private String failureMessage;
 
-    private FunctionalCommandBuilderImpl(ImmutableList.Builder<Predicate<CommandContext<?>>> predicates, String permission, String usage, String description, String failureMessage, String permissionMessage) {
+    private FunctionalCommandBuilderImpl(ImmutableList.Builder<Predicate<CommandContext<?>>> predicates, String permission, String usage, String description, String permissionMessage) {
         this.predicates = predicates;
         this.permission = permission;
         this.usage = usage;
         this.description = description;
         this.permissionMessage = permissionMessage;
-        this.failureMessage = failureMessage;
     }
 
     FunctionalCommandBuilderImpl() {
-        this(ImmutableList.builder(), null, null, null, null, null);
+        this(ImmutableList.builder(), null, null, null, null);
     }
 
     public FunctionalCommandBuilder<T> description(String description) {
@@ -42,7 +42,11 @@ class FunctionalCommandBuilderImpl<T extends CommandSender> implements Functiona
 
     public FunctionalCommandBuilder<T> bindSubs(Command... commands) {
         Objects.requireNonNull(commands, "commands");
-        this.subs.addAll(Arrays.asList(commands));
+        this.subs.clear();
+        for (Command command : commands) {
+            this.subs.add(command);
+            this.help.add();
+        }
         return this;
     }
 
@@ -86,7 +90,7 @@ class FunctionalCommandBuilderImpl<T extends CommandSender> implements Functiona
             context.reply(failureMessage);
             return false;
         });
-        return new FunctionalCommandBuilderImpl<>(this.predicates, this.permission, this.usage, this.description, this.failureMessage, this.permissionMessage);
+        return new FunctionalCommandBuilderImpl<>(this.predicates, this.permission, this.usage, this.description, this.help, this.permissionMessage);
     }
 
     @Override
@@ -100,7 +104,7 @@ class FunctionalCommandBuilderImpl<T extends CommandSender> implements Functiona
             context.reply(failureMessage);
             return false;
         });
-        return new FunctionalCommandBuilderImpl<>(this.predicates, this.permission, this.usage, this.description, this.failureMessage, this.permissionMessage);
+        return new FunctionalCommandBuilderImpl<>(this.predicates, this.permission, this.usage, this.description, this.help, this.permissionMessage);
     }
 
     @Override
@@ -108,7 +112,7 @@ class FunctionalCommandBuilderImpl<T extends CommandSender> implements Functiona
         Objects.requireNonNull(usage, "usage");
         Objects.requireNonNull(failureMessage, "failureMessage");
         this.usage = usage;
-        this.failureMessage = failureMessage;
+        this.help = failureMessage;
         List<String> usageParts = Splitter.on(" ").splitToList(usage);
         List<String> flatArgs = new ArrayList<>();
         for (String usagePart : usageParts) {
@@ -159,6 +163,11 @@ class FunctionalCommandBuilderImpl<T extends CommandSender> implements Functiona
     @Override
     public Command handler(FunctionalCommandHandler handler) {
         Objects.requireNonNull(handler, "handler");
-        return new FunctionalCommand(this.predicates.build(), this.subs, handler, this.permission, this.usage, this.description, this.failureMessage, this.permissionMessage);
+        return new FunctionalCommand(this.predicates.build(), this.subs, handler, this.permission, this.usage, this.description, this.help, this.permissionMessage);
+    }
+
+    private void createHelp() {
+        this.help.add("");
+        this.help.add("/".concat());
     }
 }

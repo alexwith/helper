@@ -1,4 +1,4 @@
-package me.hyfe.helper.command.argument;
+package me.hyfe.helper.oldcommand.argument;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeToken;

@@ -1,4 +1,4 @@
-package me.hyfe.helper.command;
+package me.hyfe.helper.oldcommand;
 
 import me.hyfe.helper.text.Text;
 import org.bukkit.command.CommandSender;

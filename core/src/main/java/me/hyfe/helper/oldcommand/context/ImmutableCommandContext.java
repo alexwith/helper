@@ -1,8 +1,8 @@
-package me.hyfe.helper.command.context;
+package me.hyfe.helper.oldcommand.context;
 
 import com.google.common.collect.ImmutableList;
-import me.hyfe.helper.command.argument.Argument;
-import me.hyfe.helper.command.argument.SimpleArgument;
+import me.hyfe.helper.oldcommand.argument.Argument;
+import me.hyfe.helper.oldcommand.argument.SimpleArgument;
 import org.bukkit.command.CommandSender;
 
 public class ImmutableCommandContext<T extends CommandSender> implements CommandContext<T> {

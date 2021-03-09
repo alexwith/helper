@@ -63,11 +63,7 @@ public final class CommandMapUtil {
         }
     }
 
-    public static <T extends CommandExecutor> T registerCommand(Plugin plugin, T command, String... aliases) {
-        return registerCommand(plugin, command, null, null, null, aliases);
-    }
-
-    public static <T extends CommandExecutor> T registerCommand(Plugin plugin, T command, String permission, String permissionMessage, String description, String... aliases) {
+    public static <T extends CommandExecutor> T registerCommand(Plugin plugin, T command, String[] aliases, String permission, String description) {
         Preconditions.checkArgument(aliases.length != 0, "No aliases");
         for (String alias : aliases) {
             try {
@@ -79,14 +75,10 @@ public final class CommandMapUtil {
                 cmd.setLabel(alias.toLowerCase());
                 if (permission != null) {
                    cmd.setPermission(permission);
-                   if (permissionMessage != null) {
-                       cmd.setPermissionMessage(permissionMessage);
-                   }
                 }
                 if (description != null) {
                     cmd.setDescription(description);
                 }
-
                 cmd.setExecutor(command);
                 if (command instanceof TabCompleter) {
                     cmd.setTabCompleter((TabCompleter) command);

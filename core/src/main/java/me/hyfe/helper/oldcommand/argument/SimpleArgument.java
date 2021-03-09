@@ -1,4 +1,4 @@
-package me.hyfe.helper.command.argument;
+package me.hyfe.helper.oldcommand.argument;
 
 public class SimpleArgument implements Argument {
     protected final int index;

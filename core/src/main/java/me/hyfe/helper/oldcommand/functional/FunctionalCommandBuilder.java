@@ -1,7 +1,7 @@
-package me.hyfe.helper.command.functional;
+package me.hyfe.helper.oldcommand.functional;
 
-import me.hyfe.helper.command.Command;
-import me.hyfe.helper.command.context.CommandContext;
+import me.hyfe.helper.oldcommand.Command;
+import me.hyfe.helper.oldcommand.context.CommandContext;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;

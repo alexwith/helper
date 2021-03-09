@@ -1,10 +1,10 @@
-package me.hyfe.helper.command.functional;
+package me.hyfe.helper.oldcommand.functional;
 
 import com.google.common.collect.ImmutableList;
-import me.hyfe.helper.command.AbstractCommand;
-import me.hyfe.helper.command.Command;
-import me.hyfe.helper.command.CommandInterruptException;
-import me.hyfe.helper.command.context.CommandContext;
+import me.hyfe.helper.oldcommand.AbstractCommand;
+import me.hyfe.helper.oldcommand.Command;
+import me.hyfe.helper.oldcommand.CommandInterruptException;
+import me.hyfe.helper.oldcommand.context.CommandContext;
 
 import java.util.Set;
 import java.util.function.Predicate;
@@ -55,10 +55,10 @@ class FunctionalCommand extends AbstractCommand {
                 handleExecuted = true;
             }
         }
-        if (!handleExecuted) {
+        /*if (!handleExecuted) {
             for (Command sub : this.subs) {
                 context.reply(sub.getFailureMessage().replace("{usage}", "/" + context.label() + " " + sub.getUsage()));
             }
-        }
+        }*/
     }
 }

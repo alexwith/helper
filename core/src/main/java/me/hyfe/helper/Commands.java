@@ -1,8 +1,8 @@
 package me.hyfe.helper;
 
-import me.hyfe.helper.command.argument.ArgumentParserRegistry;
-import me.hyfe.helper.command.argument.SimpleParserRegistry;
-import me.hyfe.helper.command.functional.FunctionalCommandBuilder;
+import me.hyfe.helper.oldcommand.argument.ArgumentParserRegistry;
+import me.hyfe.helper.oldcommand.argument.SimpleParserRegistry;
+import me.hyfe.helper.oldcommand.functional.FunctionalCommandBuilder;
 import me.hyfe.helper.uuid.FastUUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -10,9 +10,7 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public final class Commands {
     private static final ArgumentParserRegistry PARSER_REGISTRY;

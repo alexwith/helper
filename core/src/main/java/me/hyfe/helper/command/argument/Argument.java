@@ -1,50 +1,41 @@
 package me.hyfe.helper.command.argument;
 
-import com.google.common.reflect.TypeToken;
-import me.hyfe.helper.Commands;
-import me.hyfe.helper.command.CommandInterruptException;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import me.hyfe.helper.command.tabcomplete.TabResolver;
 
-public interface Argument {
+import java.util.Set;
 
-    int index();
+public class Argument<T> {
+    private final ArgumentType<T> type;
+    private final String argument;
+    private final Set<String> aliases;
+    private final TabResolver tabResolver;
 
-    String value();
-
-    default <T> T parse(ArgumentParser<T> parser) {
-        return parser.parse(this);
+    public Argument(ArgumentType<T> type, String argument, Set<String> aliases, TabResolver tabResolver) {
+        this.type = type;
+        this.argument = argument;
+        this.aliases = aliases;
+        this.tabResolver = tabResolver;
     }
 
-    default <T> T parseOrFail(ArgumentParser<T> parser) throws CommandInterruptException {
-        return parser.parseOrFail(this);
+    public Argument(ArgumentType<T> type, String argument, String... aliases) {
+        this(type, argument, Sets.newHashSet(argument), (sender) -> Lists.newArrayList(argument));
     }
 
-    default <T> T parse(TypeToken<T> type) {
-        return this.parse(Commands.parserRegistry().find(type));
+    public ArgumentType<T> getType() {
+        return this.type;
     }
 
-    default <T> T parseOrFail(TypeToken<T> type) throws CommandInterruptException {
-        ArgumentParser<T> parser = Commands.parserRegistry().find(type);
-        if (parser == null) {
-            throw new RuntimeException("Unable to find ArgumentParser for " + type);
-        }
-        return parseOrFail(parser);
+    public String getArgument() {
+        return this.argument;
     }
 
-    default <T> T parse(Class<T> clazz) {
-        return this.parse(Commands.parserRegistry().find(clazz));
+    public Set<String> getAliases() {
+        return this.aliases;
     }
 
-    default <T> T parseOrFail(Class<T> clazz) throws CommandInterruptException {
-        ArgumentParser<T> parser = Commands.parserRegistry().find(clazz);
-        if (parser == null) {
-            throw new RuntimeException("Unable to find ArgumentParser for " + clazz);
-        }
-        return parseOrFail(parser);
-    }
-
-    boolean isPresent();
-
-    default void assertPresent() throws CommandInterruptException {
-        CommandInterruptException.makeAssertion(isPresent(), "&cArgument at index " + index() + " is not present.");
+    public TabResolver getTabResolver() {
+        return this.tabResolver;
     }
 }

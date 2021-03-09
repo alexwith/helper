@@ -1,6 +1,6 @@
-package me.hyfe.helper.command;
+package me.hyfe.helper.oldcommand;
 
-import me.hyfe.helper.command.context.CommandContext;
+import me.hyfe.helper.oldcommand.context.CommandContext;
 import me.hyfe.helper.terminable.Terminable;
 import me.hyfe.helper.terminable.TerminableConsumer;
 
