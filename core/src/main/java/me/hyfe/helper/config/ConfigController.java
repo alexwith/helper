@@ -1,5 +1,6 @@
 package me.hyfe.helper.config;
 
+import me.hyfe.helper.Schedulers;
 import me.hyfe.helper.promise.Promise;
 
 import java.util.HashMap;
@@ -20,6 +21,14 @@ public class ConfigController {
 
     public Promise<Void> reload(String name) {
         return this.configs.get(name).reload();
+    }
+
+    public Promise<Void> reloadAll() {
+        return Schedulers.async().run(() -> {
+            for (Config config : this.configs.values()) {
+                config.reload().join();
+            }
+        });
     }
 
     public void registerConfigs(KeysHolder... keyHolders) {
