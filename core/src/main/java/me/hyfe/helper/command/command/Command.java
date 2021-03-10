@@ -15,7 +15,7 @@ import java.util.Set;
 
 public abstract class Command<T extends CommandSender> extends AbstractCommand<T> implements CommandExecutor {
     private final Set<String> aliases;
-    private final Set<SubCommand> subs = Sets.newLinkedHashSet();
+    private final Set<SubCommand<?>> subs = Sets.newLinkedHashSet();
 
     public Command(Class<T> senderClass, String permission, String description, String... aliases) {
         super(senderClass, permission, description);
@@ -23,7 +23,7 @@ public abstract class Command<T extends CommandSender> extends AbstractCommand<T
         this.register();
     }
 
-    public void setSubs(SubCommand... subs) {
+    public void setSubs(SubCommand<?>... subs) {
         this.subs.clear();
         this.subs.addAll(Arrays.asList(subs));
     }
@@ -51,25 +51,23 @@ public abstract class Command<T extends CommandSender> extends AbstractCommand<T
             this.handle(translatedSender, context);
             return true;
         }
-        SubCommand<? extends CommandSender> matchedSub = null;
-        for (SubCommand<? extends CommandSender> sub : this.subs) {
-            if ((args.length > sub.getArgumentsSize()
-                    && sub.isEndless())
-                    || (sub.getArgumentsSize() == args.length
-                    && sub.isMatch(args))) {
-                matchedSub = sub;
+        SubCommand<? super CommandSender> foundSub = null;
+        for (SubCommand<? super CommandSender> sub : this.subs) {
+            if ((args.length > sub.getArgumentsSize() && sub.isEndless())
+                    || (sub.getArgumentsSize() == args.length && sub.isMatch(args))) {
+                foundSub = sub;
                 break;
             }
         }
-        if (matchedSub == null) {
+        if (foundSub == null) {
             this.handle(translatedSender, context);
             return true;
         }
-        if (!matchedSub.canConsole() && sender instanceof ConsoleCommandSender) {
+        if (!foundSub.canConsole() && sender instanceof ConsoleCommandSender) {
             Text.send(sender, "&cThis command can only be executed by a player.");
             return true;
         }
-        matchedSub.handle(Translate.apply(sender, matchedSub.senderClass), context);
+        foundSub.handle(Translate.apply(sender, foundSub.senderClass), context);
         return true;
     }
 }

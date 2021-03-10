@@ -8,6 +8,7 @@ import org.bukkit.plugin.SimplePluginManager;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -63,8 +64,7 @@ public final class CommandMapUtil {
         }
     }
 
-    public static <T extends CommandExecutor> T registerCommand(Plugin plugin, T command, String[] aliases, String permission, String description) {
-        Preconditions.checkArgument(aliases.length != 0, "No aliases");
+    public static <T extends CommandExecutor> T registerCommand(Plugin plugin, T command, Collection<String> aliases, String permission, String description) {
         for (String alias : aliases) {
             try {
                 PluginCommand cmd = COMMAND_CONSTRUCTOR.newInstance(alias, plugin);

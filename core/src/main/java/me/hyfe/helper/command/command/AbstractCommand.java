@@ -3,6 +3,7 @@ package me.hyfe.helper.command.command;
 import me.hyfe.helper.command.context.CommandContext;
 import me.hyfe.helper.internal.LoaderUtils;
 import me.hyfe.helper.plugin.HelperPlugin;
+import me.hyfe.helper.utils.Translate;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
