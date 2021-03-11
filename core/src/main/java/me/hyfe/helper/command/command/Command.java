@@ -2,6 +2,7 @@ package me.hyfe.helper.command.command;
 
 import com.google.common.collect.Sets;
 import me.hyfe.helper.command.context.CommandContext;
+import me.hyfe.helper.command.context.SubCommandContext;
 import me.hyfe.helper.internal.LoaderUtils;
 import me.hyfe.helper.text.Text;
 import me.hyfe.helper.utils.CommandMapUtil;
@@ -51,23 +52,23 @@ public abstract class Command<T extends CommandSender> extends AbstractCommand<T
             this.handle(translatedSender, context);
             return true;
         }
-        SubCommand<? super CommandSender> foundSub = null;
-        for (SubCommand<? super CommandSender> sub : this.subs) {
-            if ((args.length > sub.getArgumentsSize() && sub.isEndless())
-                    || (sub.getArgumentsSize() == args.length && sub.isMatch(args))) {
-                foundSub = sub;
-                break;
+        boolean handledSub = false;
+        for (SubCommand<? extends CommandSender> sub : this.subs) {
+            SubCommandContext subContext = sub.createSubContext(args);
+            if ((args.length <= sub.argumentsLength() || !sub.isEndless())
+                    && (sub.argumentsLength() != args.length || !subContext.matchUntil(args.length))) {
+                continue;
             }
+            if (!sub.canConsole() && sender instanceof ConsoleCommandSender) {
+                Text.send(sender, "&cThis command can only be executed by a player.");
+                continue;
+            }
+            sub.handleSubWare(Translate.apply(sender, sub.senderClass), subContext);
+            handledSub = true;
         }
-        if (foundSub == null) {
+        if (!handledSub) {
             this.handle(translatedSender, context);
-            return true;
         }
-        if (!foundSub.canConsole() && sender instanceof ConsoleCommandSender) {
-            Text.send(sender, "&cThis command can only be executed by a player.");
-            return true;
-        }
-        foundSub.handle(Translate.apply(sender, foundSub.senderClass), context);
         return true;
     }
 }
