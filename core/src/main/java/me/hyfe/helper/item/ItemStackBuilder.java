@@ -1,7 +1,10 @@
 package me.hyfe.helper.item;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import me.hyfe.helper.config.Config;
 import me.hyfe.helper.text.Text;
+import me.hyfe.helper.version.ServerVersion;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -9,11 +12,10 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.lang.reflect.Field;
+import java.util.*;
 import java.util.function.Consumer;
 
 public final class ItemStackBuilder {
@@ -34,23 +36,45 @@ public final class ItemStackBuilder {
     }
 
     public static ItemStackBuilder of(Config config, String path) {
-        return null;
+        ItemStackBuilder builder = new ItemStackBuilder(new ItemStack(Material.DIRT)).hideAttributes();
+        String[] type = config.<String>tryGet(path.concat(".type")).split(":");
+        if (type[0].equalsIgnoreCase("head")) {
+            builder.head(type[1]);
+        } else {
+            builder.type(Material.valueOf(type[0]));
+            if (type.length > 1) {
+                builder.data(Integer.parseInt(type[1]));
+            }
+        }
+        if (config.has("name")) {
+            builder.name(config.tryGet("name"));
+        }
+        if (config.has("lore")) {
+            builder.lore(config.<List<String>>tryGet("lore"));
+        }
+        if (config.has("amount")) {
+            builder.amount(1);
+        }
+        if (config.has("glow") && config.<Boolean>tryGet("glow")) {
+            builder.glow();
+        }
+        return builder;
     }
 
     private ItemStackBuilder(ItemStack itemStack) {
         this.itemStack = Objects.requireNonNull(itemStack, "itemStack");
     }
 
-    public ItemStackBuilder transform(Consumer<ItemStack> is) {
-        is.accept(this.itemStack);
+    public ItemStackBuilder transform(Consumer<ItemStack> itemStack) {
+        itemStack.accept(this.itemStack);
         return this;
     }
 
     public ItemStackBuilder transformMeta(Consumer<ItemMeta> meta) {
-        ItemMeta m = this.itemStack.getItemMeta();
-        if (m != null) {
-            meta.accept(m);
-            this.itemStack.setItemMeta(m);
+        ItemMeta itemMeta = this.itemStack.getItemMeta();
+        if (itemMeta != null) {
+            meta.accept(itemMeta);
+            this.itemStack.setItemMeta(itemMeta);
         }
         return this;
     }
@@ -61,6 +85,29 @@ public final class ItemStackBuilder {
 
     public ItemStackBuilder type(Material material) {
         return transform(itemStack -> itemStack.setType(material));
+    }
+
+    public ItemStackBuilder head(String tag) {
+        boolean isNew = ServerVersion.isCurrentOver(ServerVersion.MC1_12_R1);
+        this.type(Material.valueOf(isNew ? "PLAYER_HEAD" : "SKULL_ITEM"));
+        this.data(3);
+        SkullMeta skullMeta = (SkullMeta) this.itemStack.getItemMeta();
+        if (tag.length() > 16) { // is base64
+            GameProfile profile = new GameProfile(UUID.randomUUID(), "");
+            profile.getProperties().put("textures", new Property("textures", tag));
+            Field profileField;
+            try {
+                profileField = skullMeta.getClass().getDeclaredField("profile");
+                profileField.setAccessible(true);
+                profileField.set(skullMeta, profile);
+            } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+                e.printStackTrace();
+            }
+        } else {
+            skullMeta.setOwner(tag);
+        }
+        this.itemStack.setItemMeta(skullMeta);
+        return this;
     }
 
     public ItemStackBuilder lore(String line) {
@@ -127,6 +174,11 @@ public final class ItemStackBuilder {
 
     public ItemStackBuilder showAttributes() {
         return unflag(ALL_FLAGS);
+    }
+
+    public ItemStackBuilder glow() {
+        this.enchant(Enchantment.DURABILITY, 0);
+        return this.flag(ItemFlag.HIDE_ENCHANTS);
     }
 
     public ItemStackBuilder color(Color color) {

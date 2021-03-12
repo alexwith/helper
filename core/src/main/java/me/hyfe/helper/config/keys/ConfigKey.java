@@ -23,6 +23,10 @@ public class ConfigKey<T> implements Supplier<T> {
         return LoaderUtils.getPlugin().getConfigController().getKeysHolder(this.keysHolder).getConfig();
     }
 
+    public String getKey() {
+        return this.key;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public T get() {

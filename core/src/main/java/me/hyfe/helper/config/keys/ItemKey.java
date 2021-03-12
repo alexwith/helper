@@ -1,7 +1,7 @@
 package me.hyfe.helper.config.keys;
 
-import me.hyfe.helper.config.Config;
 import me.hyfe.helper.config.KeysHolder;
+import me.hyfe.helper.item.ItemStackBuilder;
 import org.bukkit.inventory.ItemStack;
 
 public class ItemKey extends ConfigKey<ItemStack> {
@@ -16,7 +16,6 @@ public class ItemKey extends ConfigKey<ItemStack> {
 
     @Override
     public ItemStack get() {
-        Config config = this.getConfig();
-        return super.get();
+        return ItemStackBuilder.of(this.getConfig(), this.getKey()).build();
     }
 }

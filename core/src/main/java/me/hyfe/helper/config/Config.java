@@ -43,6 +43,15 @@ public class Config {
         return this.name;
     }
 
+    public boolean has(String key) {
+        return this.map.containsKey(key);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T tryGet(String key) {
+        return (T) this.get(key);
+    }
+
     public Object get(String key) {
         return this.map.get(key);
     }
