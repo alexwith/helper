@@ -36,6 +36,7 @@ public final class ItemStackBuilder {
     }
 
     public static ItemStackBuilder of(Config config, String path) {
+        System.out.println(Arrays.toString(config.keys().toArray(new String[0])));
         ItemStackBuilder builder = new ItemStackBuilder(new ItemStack(Material.DIRT)).hideAttributes();
         String[] type = config.<String>tryGet(path.concat(".type")).split(":");
         if (type[0].equalsIgnoreCase("head")) {

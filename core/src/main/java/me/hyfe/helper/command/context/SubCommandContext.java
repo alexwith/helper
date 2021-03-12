@@ -24,6 +24,10 @@ public class SubCommandContext extends CommandContext {
         return ((Argument<T>) this.arguments.get(index)).getType().parse(this.args[index]);
     }
 
+    public String rawArg(int index) {
+        return this.args[index];
+    }
+
     public String[] endlessResult() {
         Set<String> end = Sets.newLinkedHashSet();
         for (int i = 0; i < this.args.length; i++) {

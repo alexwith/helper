@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,10 @@ public class Config {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    public Set<String> keys() {
+        return this.map.keySet();
     }
 
     public String getName() {
@@ -91,6 +96,24 @@ public class Config {
         for (Map.Entry<?, ?> entry : input.entrySet()) {
             String key = entry.getKey().toString();
             Object value = entry.getValue();
+            if (value instanceof Map) {
+                Map<?, ?> section = ((Map<?, ?>) value);
+                this.writeSectionToMemory(section, key);
+                continue;
+            }
+            this.map.put(key, value);
+        }
+    }
+
+    private void writeSectionToMemory(Map<?, ?> input, String parent) {
+        for (Map.Entry<?, ?> entry : input.entrySet()) {
+            String key = parent + "." + entry.getKey().toString();
+            Object value = entry.getValue();
+            if (value instanceof Map) {
+                Map<?, ?> section = ((Map<?, ?>) value);
+                this.writeSectionToMemory(section, key);
+                continue;
+            }
             this.map.put(key, value);
         }
     }
