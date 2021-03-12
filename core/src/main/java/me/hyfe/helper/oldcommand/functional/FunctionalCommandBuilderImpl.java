@@ -15,23 +15,24 @@ import java.util.function.Predicate;
 class FunctionalCommandBuilderImpl<T extends CommandSender> implements FunctionalCommandBuilder<T> {
     private final ImmutableList.Builder<Predicate<CommandContext<?>>> predicates;
     private final Set<Command> subs = new LinkedHashSet<>();
-    private final Set<String> help = Sets.newLinkedHashSet();
 
     private String permission;
     private String usage;
     private String description;
     private String permissionMessage;
+    private String failureMessage;
 
-    private FunctionalCommandBuilderImpl(ImmutableList.Builder<Predicate<CommandContext<?>>> predicates, String permission, String usage, String description, String permissionMessage) {
+    private FunctionalCommandBuilderImpl(ImmutableList.Builder<Predicate<CommandContext<?>>> predicates, String permission, String usage, String description, String failureMessage, String permissionMessage) {
         this.predicates = predicates;
         this.permission = permission;
         this.usage = usage;
         this.description = description;
         this.permissionMessage = permissionMessage;
+        this.failureMessage = failureMessage;
     }
 
     FunctionalCommandBuilderImpl() {
-        this(ImmutableList.builder(), null, null, null, null);
+        this(ImmutableList.builder(), null, null, null, null, null);
     }
 
     public FunctionalCommandBuilder<T> description(String description) {
@@ -42,11 +43,7 @@ class FunctionalCommandBuilderImpl<T extends CommandSender> implements Functiona
 
     public FunctionalCommandBuilder<T> bindSubs(Command... commands) {
         Objects.requireNonNull(commands, "commands");
-        this.subs.clear();
-        for (Command command : commands) {
-            this.subs.add(command);
-            this.help.add();
-        }
+        this.subs.addAll(Arrays.asList(commands));
         return this;
     }
 
@@ -90,7 +87,7 @@ class FunctionalCommandBuilderImpl<T extends CommandSender> implements Functiona
             context.reply(failureMessage);
             return false;
         });
-        return new FunctionalCommandBuilderImpl<>(this.predicates, this.permission, this.usage, this.description, this.help, this.permissionMessage);
+        return new FunctionalCommandBuilderImpl<>(this.predicates, this.permission, this.usage, this.description, this.failureMessage, this.permissionMessage);
     }
 
     @Override
@@ -104,7 +101,7 @@ class FunctionalCommandBuilderImpl<T extends CommandSender> implements Functiona
             context.reply(failureMessage);
             return false;
         });
-        return new FunctionalCommandBuilderImpl<>(this.predicates, this.permission, this.usage, this.description, this.help, this.permissionMessage);
+        return new FunctionalCommandBuilderImpl<>(this.predicates, this.permission, this.usage, this.description, this.failureMessage, this.permissionMessage);
     }
 
     @Override
@@ -112,7 +109,7 @@ class FunctionalCommandBuilderImpl<T extends CommandSender> implements Functiona
         Objects.requireNonNull(usage, "usage");
         Objects.requireNonNull(failureMessage, "failureMessage");
         this.usage = usage;
-        this.help = failureMessage;
+        this.failureMessage = failureMessage;
         List<String> usageParts = Splitter.on(" ").splitToList(usage);
         List<String> flatArgs = new ArrayList<>();
         for (String usagePart : usageParts) {
@@ -163,11 +160,6 @@ class FunctionalCommandBuilderImpl<T extends CommandSender> implements Functiona
     @Override
     public Command handler(FunctionalCommandHandler handler) {
         Objects.requireNonNull(handler, "handler");
-        return new FunctionalCommand(this.predicates.build(), this.subs, handler, this.permission, this.usage, this.description, this.help, this.permissionMessage);
-    }
-
-    private void createHelp() {
-        this.help.add("");
-        this.help.add("/".concat());
+        return new FunctionalCommand(this.predicates.build(), this.subs, handler, this.permission, this.usage, this.description, this.failureMessage, this.permissionMessage);
     }
 }

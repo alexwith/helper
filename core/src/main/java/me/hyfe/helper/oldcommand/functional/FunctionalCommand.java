@@ -55,10 +55,10 @@ class FunctionalCommand extends AbstractCommand {
                 handleExecuted = true;
             }
         }
-        /*if (!handleExecuted) {
+        if (!handleExecuted) {
             for (Command sub : this.subs) {
                 context.reply(sub.getFailureMessage().replace("{usage}", "/" + context.label() + " " + sub.getUsage()));
             }
-        }*/
+        }
     }
 }
