@@ -1,39 +1,17 @@
 package me.hyfe.helper;
 
-import me.hyfe.helper.oldcommand.argument.ArgumentParserRegistry;
-import me.hyfe.helper.oldcommand.argument.SimpleParserRegistry;
-import me.hyfe.helper.oldcommand.functional.FunctionalCommandBuilder;
-import me.hyfe.helper.uuid.FastUUID;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
+import me.hyfe.helper.command.functional.FunctionalCommandBuilder;
+import me.hyfe.helper.command.functional.FunctionalSubCommandBuilder;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import java.util.UUID;
+import org.bukkit.command.ConsoleCommandSender;
 
 public final class Commands {
-    private static final ArgumentParserRegistry PARSER_REGISTRY;
 
-    public static ArgumentParserRegistry parserRegistry() {
-        return PARSER_REGISTRY;
+    public static FunctionalCommandBuilder<CommandSender> create(String... aliases) {
+        return new FunctionalCommandBuilder<>(ConsoleCommandSender.class, null, "The default command.", aliases);
     }
 
-    static {
-        PARSER_REGISTRY = new SimpleParserRegistry();
-
-        PARSER_REGISTRY.register(String.class, (arg) -> arg);
-        PARSER_REGISTRY.register(Integer.class, Integer::parseInt);
-        PARSER_REGISTRY.register(Long.class, Long::parseLong);
-        PARSER_REGISTRY.register(Double.class, Double::parseDouble);
-        PARSER_REGISTRY.register(Boolean.class, arg -> arg.equalsIgnoreCase("true"));
-        PARSER_REGISTRY.register(UUID.class, FastUUID::parse);
-        PARSER_REGISTRY.register(Player.class, Bukkit::getPlayerExact);
-        PARSER_REGISTRY.register(OfflinePlayer.class, Bukkit::getOfflinePlayer);
-        PARSER_REGISTRY.register(World.class, Helper::world);
-    }
-
-    public static FunctionalCommandBuilder<CommandSender> create() {
-        return FunctionalCommandBuilder.newBuilder();
+    public static FunctionalSubCommandBuilder<CommandSender> createSub() {
+        return new FunctionalSubCommandBuilder<>(ConsoleCommandSender.class, null, "Default description.", false);
     }
 }

@@ -12,6 +12,7 @@ public abstract class AbstractCommand<T extends CommandSender> {
     protected final HelperPlugin plugin;
     protected final String permission;
     protected final String description;
+    protected String usage;
 
     public AbstractCommand(Class<T> senderClass, String permission, String description) {
         this.plugin = LoaderUtils.getPlugin();

@@ -3,7 +3,9 @@ package me.hyfe.helper.command.context;
 import com.google.common.collect.Sets;
 import me.hyfe.helper.command.argument.Argument;
 import me.hyfe.helper.command.command.SubCommand;
+import org.bukkit.command.CommandSender;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -15,6 +17,11 @@ public class SubCommandContext extends CommandContext {
         super(args);
         this.arguments = sub.getArguments();
         this.endless = sub.isEndless();
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T arg(int index) {
+        return ((Argument<T>) this.arguments.get(index)).getType().parse(this.args[index]);
     }
 
     public String[] endlessResult() {
@@ -35,6 +42,13 @@ public class SubCommandContext extends CommandContext {
             }
         }
         return true;
+    }
+
+    public List<String> suggestions(CommandSender sender, int index) {
+        if (index < this.arguments.size() - 1) {
+            return Collections.emptyList();
+        }
+        return this.arguments.get(index).getTabResolver().resolve(sender);
     }
 
     public boolean matchArgument(int index) {
