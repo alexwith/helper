@@ -1,5 +1,6 @@
-package me.hyfe.helper.config;
+package me.hyfe.helper.config.keys;
 
+import me.hyfe.helper.config.KeysHolder;
 import me.hyfe.helper.text.Text;
 import me.hyfe.helper.text.replacer.Replacer;
 import org.bukkit.command.CommandSender;
@@ -10,7 +11,7 @@ public class LangKey extends ConfigKey<String> {
         super(keysHolder, key);
     }
 
-    public static LangKey ofLang(Class<? extends KeysHolder> keysHolder, String key) {
+    public static LangKey ofKey(Class<? extends KeysHolder> keysHolder, String key) {
         return new LangKey(keysHolder, key);
     }
 

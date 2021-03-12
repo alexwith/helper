@@ -4,6 +4,12 @@ import me.hyfe.helper.text.replacer.Replacer;
 import me.hyfe.helper.text.replacer.Subject;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Text {
 
@@ -20,6 +26,26 @@ public class Text {
             send(sender, message);
         }
     }
+
+    public static ItemStack colorize(ItemStack itemStack, Replacer replacer) {
+        ItemStack item = itemStack.clone();
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) {
+            return itemStack;
+        }
+        meta.setDisplayName(colorize(meta.getDisplayName(), replacer));
+        meta.setLore(colorize(meta.getLore(), replacer));
+        return item;
+    }
+
+    public static List<String> colorize(Collection<String> collection) {
+        return colorize(collection, null);
+    }
+
+    public static List<String> colorize(Collection<String> collection, Replacer replacer) {
+        return collection.stream().map((string) -> colorize(string, replacer)).collect(Collectors.toList());
+    }
+
 
     public static String colorize(String string) {
         return colorize(string, null);

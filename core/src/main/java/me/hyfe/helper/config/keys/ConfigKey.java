@@ -1,5 +1,7 @@
-package me.hyfe.helper.config;
+package me.hyfe.helper.config.keys;
 
+import me.hyfe.helper.config.Config;
+import me.hyfe.helper.config.KeysHolder;
 import me.hyfe.helper.internal.LoaderUtils;
 
 import java.util.function.Supplier;
@@ -17,10 +19,13 @@ public class ConfigKey<T> implements Supplier<T> {
         return new ConfigKey<>(keysHolder, key);
     }
 
+    public Config getConfig() {
+        return LoaderUtils.getPlugin().getConfigController().getKeysHolder(this.keysHolder).getConfig();
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public T get() {
-        KeysHolder keysHolder = LoaderUtils.getPlugin().getConfigController().getKeysHolder(this.keysHolder);
-        return (T) keysHolder.getConfig().get(this.key);
+        return (T) this.getConfig().get(this.key);
     }
 }
