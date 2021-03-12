@@ -49,15 +49,14 @@ public abstract class Command<T extends CommandSender> extends AbstractCommand<T
     }
 
     public void sendUsage(CommandSender sender) {
-        if (this.usage == null) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("&r\n").append("/").append(this.name).append("\n&r");
-            for (SubCommand<?> sub : this.subs) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("&r\n").append("/").append(this.name).append("\n&r");
+        for (SubCommand<?> sub : this.subs) {
+            if (sub.getPermission() == null || sender.hasPermission(sub.getPermission())) {
                 builder.append(sub.getUsage()).append("\n");
             }
-            this.usage = builder.toString();
         }
-        Text.send(sender, this.usage);
+        Text.send(sender, builder.toString());
     }
 
     @Override
@@ -74,7 +73,7 @@ public abstract class Command<T extends CommandSender> extends AbstractCommand<T
             return true;
         }
         T translatedSender = Translate.apply(sender, this.senderClass);
-        CommandContext context = new CommandContext(args);
+        CommandContext context = new CommandContext(this, args);
         if (args.length == 0) {
             this.handle(translatedSender, context);
             return true;

@@ -1,9 +1,9 @@
 package me.hyfe.helper.command.argument;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import me.hyfe.helper.command.tabcomplete.TabResolver;
 
+import java.util.Collections;
 import java.util.Set;
 
 public class Argument<T> {
@@ -16,11 +16,11 @@ public class Argument<T> {
         this.type = type;
         this.argument = argument;
         this.aliases = aliases;
-        this.tabResolver = tabResolver;
+        this.tabResolver = tabResolver == null ? (sender) -> Collections.singletonList(argument) : tabResolver;
     }
 
     public Argument(ArgumentType<T> type, String argument, String... aliases) {
-        this(type, argument, Sets.newHashSet(argument), (sender) -> Lists.newArrayList(argument));
+        this(type, argument, Sets.newHashSet(argument), (sender) -> Collections.singletonList(argument));
     }
 
     public ArgumentType<T> getType() {

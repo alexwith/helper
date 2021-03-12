@@ -34,7 +34,7 @@ public abstract class SubCommand<T extends CommandSender> extends AbstractComman
 
     @SuppressWarnings("unchecked")
     public <U extends CommandSender> void handleSubWare(U sender, SubCommandContext context) {
-        this.handle((T) sender, context);
+        this.handleSub((T) sender, context);
     }
 
     public boolean isEndless() {
@@ -58,7 +58,7 @@ public abstract class SubCommand<T extends CommandSender> extends AbstractComman
     }
 
     public <U> void argument(Class<U> clazz, String name, TabResolver tabResolver, String... aliases) {
-        this.arguments.add(new Argument<U>(ArgumentTypes.getType(clazz), name, Sets.newHashSet(aliases), tabResolver));
+        this.arguments.add(new Argument<>(ArgumentTypes.getType(clazz), name, Sets.newHashSet(aliases), tabResolver));
     }
 
     public List<Argument<?>> getArguments() {
@@ -80,7 +80,7 @@ public abstract class SubCommand<T extends CommandSender> extends AbstractComman
             if (argument.getType() == null) {
                 builder.append(" ").append("&7").append(name);
             } else {
-                builder.append("&8<&7").append(name).append("&8>");
+                builder.append("&8 <&7").append(name).append("&8>");
             }
         }
         return "&8  > &7" + parent.getName() + builder.toString() + " &8- &7" + this.description;

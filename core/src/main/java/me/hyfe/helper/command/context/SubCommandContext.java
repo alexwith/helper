@@ -14,7 +14,7 @@ public class SubCommandContext extends CommandContext {
     private final boolean endless;
 
     public SubCommandContext(String[] args, SubCommand<?> sub) {
-        super(args);
+        super(null, args);
         this.arguments = sub.getArguments();
         this.endless = sub.isEndless();
     }
@@ -37,7 +37,7 @@ public class SubCommandContext extends CommandContext {
 
     public boolean matchUntil(int index) {
         for (int i = 0; i < index; i++) {
-            if (!this.matchArgument(index)) {
+            if (!this.matchArgument(i)) {
                 return false;
             }
         }
@@ -45,7 +45,7 @@ public class SubCommandContext extends CommandContext {
     }
 
     public List<String> suggestions(CommandSender sender, int index) {
-        if (index < this.arguments.size() - 1) {
+        if (index > this.arguments.size() - 1) {
             return Collections.emptyList();
         }
         return this.arguments.get(index).getTabResolver().resolve(sender);
@@ -59,7 +59,7 @@ public class SubCommandContext extends CommandContext {
             return false;
         }
         Argument<?> argument = this.arguments.get(index);
-        if (argument.getArgument() == null) {
+        if (argument.getType() == null) {
             for (String alias : argument.getAliases()) {
                 if (this.args[index].equalsIgnoreCase(alias)) {
                     return true;

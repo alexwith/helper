@@ -52,6 +52,7 @@ public class FunctionalCommandBuilder<T extends CommandSender> extends AbstractC
         if (this.subs != null) {
             command.setSubs(this.subs);
         }
+        command.register();
         return command;
     }
 }
