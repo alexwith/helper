@@ -1,12 +1,13 @@
 package me.hyfe.helper.config;
 
 import me.hyfe.helper.Schedulers;
+import me.hyfe.helper.internal.LoaderUtils;
 import me.hyfe.helper.promise.Promise;
 import me.hyfe.helper.promise.ThreadContext;
-import org.bukkit.plugin.Plugin;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,9 +32,9 @@ public class Config {
         this.load();
     }
 
-    public static Config create(Plugin plugin, String name, UnaryOperator<Path> path) {
+    public static Config create(String name, UnaryOperator<Path> path) {
         try {
-            return new Config(name, path.apply(plugin.getDataFolder().toPath().toAbsolutePath()).resolve(name).toFile());
+            return new Config(name, path.apply(LoaderUtils.getPlugin().getDataFolder().toPath().toAbsolutePath()).resolve(name).toFile());
         } catch (IOException ex) {
             ex.printStackTrace();
         }
