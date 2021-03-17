@@ -1,7 +1,8 @@
-package me.hyfe.helper.menu.gui;
+package me.hyfe.helper.menu.config;
 
 import me.hyfe.helper.config.KeysHolder;
 import me.hyfe.helper.config.keys.ConfigKey;
+import me.hyfe.helper.menu.gui.Gui;
 import org.bukkit.entity.Player;
 
 public abstract class ConfigGui extends Gui {

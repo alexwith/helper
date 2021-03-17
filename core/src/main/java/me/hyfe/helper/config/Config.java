@@ -7,7 +7,6 @@ import me.hyfe.helper.promise.ThreadContext;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,6 +27,7 @@ public class Config {
         this.name = name;
         this.file = file;
         this.yaml = new Yaml();
+        this.createPath();
         this.createResource();
         this.load();
     }
@@ -117,6 +117,11 @@ public class Config {
             }
             this.map.put(key, value);
         }
+    }
+
+    private void createPath() {
+        String absolutePath = this.file.toPath().toString();
+        new File(absolutePath.substring(0, absolutePath.lastIndexOf(File.separator))).mkdirs();
     }
 
     private void createResource() {

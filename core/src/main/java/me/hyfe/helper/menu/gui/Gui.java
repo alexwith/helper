@@ -2,6 +2,8 @@ package me.hyfe.helper.menu.gui;
 
 import me.hyfe.helper.Events;
 import me.hyfe.helper.Schedulers;
+import me.hyfe.helper.menu.item.Item;
+import me.hyfe.helper.menu.slot.Slot;
 import me.hyfe.helper.terminable.TerminableConsumer;
 import me.hyfe.helper.terminable.composite.CompositeTerminable;
 import me.hyfe.helper.text.Text;
@@ -19,6 +21,8 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 public abstract class Gui implements InventoryHolder, TerminableConsumer {
@@ -27,6 +31,8 @@ public abstract class Gui implements InventoryHolder, TerminableConsumer {
     protected int rows;
     protected Inventory inventory;
     protected boolean firstDraw = true;
+
+    private final Map<Integer, Slot> slots = new HashMap<>();
 
     private Function<Player, Gui> fallback;
 
@@ -88,8 +94,51 @@ public abstract class Gui implements InventoryHolder, TerminableConsumer {
         return this.firstDraw;
     }
 
-    public void clear() {
+    public Slot getSlot(int slot) {
+        if (!this.valid) {
+            return null;
+        }
+        return this.slots.computeIfAbsent(slot, (id) -> new Slot(this, id));
+    }
 
+    public void setItem(Item item, int slot) {
+        this.getSlot(slot).applyItem(item);
+    }
+
+    public void setItems(Item item, int... slots) {
+        for (int slot : slots) {
+            this.setItem(item, slot);
+        }
+    }
+
+    public int firstEmpty() {
+        return this.inventory.firstEmpty();
+    }
+
+    public Slot firstEmptySlot() {
+        return this.getSlot(this.firstEmpty());
+    }
+
+    public void addItem(Item item) {
+        Slot slot = this.firstEmptySlot();
+        if (slot != null) {
+            slot.applyItem(item);
+        }
+    }
+
+    public void removeItem(int slot) {
+        this.getSlot(slot).clear();
+    }
+
+    public void removeItems(int... slots) {
+        for (int slot : slots) {
+            this.removeItem(slot);
+        }
+    }
+
+    public void clear() {
+        this.inventory.clear();
+        this.slots.values().forEach(Slot::clearBindings);
     }
 
     public void open() {
@@ -145,11 +194,14 @@ public abstract class Gui implements InventoryHolder, TerminableConsumer {
                         this.close();
                         return;
                     }
-                    int slodId = event.getSlot();
-                    if (slodId != event.getSlot()) {
+                    int slotId = event.getSlot();
+                    if (slotId != event.getSlot()) {
                         return;
                     }
-
+                    Slot slot = this.slots.get(slotId);
+                    if (slot != null) {
+                        slot.handle(event);
+                    }
                 }).bindWith(this);
         Events.subscribe(InventoryOpenEvent.class)
                 .filter((event) -> event.getPlayer().equals(this.player))
