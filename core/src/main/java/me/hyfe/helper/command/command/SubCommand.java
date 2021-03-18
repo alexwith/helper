@@ -83,6 +83,6 @@ public abstract class SubCommand<T extends CommandSender> extends AbstractComman
                 builder.append("&8 <&7").append(name).append("&8>");
             }
         }
-        return "&8  > &7" + parent.getName() + builder.toString() + " &8- &7" + this.description;
+        return "&8  > &7/" + parent.getName() + builder.toString() + " &8- &7" + this.description;
     }
 }

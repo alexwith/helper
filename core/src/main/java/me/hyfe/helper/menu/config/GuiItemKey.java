@@ -1,13 +1,14 @@
 package me.hyfe.helper.menu.config;
 
 import me.hyfe.helper.config.KeysHolder;
-import me.hyfe.helper.config.keys.ItemKey;
+import me.hyfe.helper.config.keys.ConfigKey;
+import me.hyfe.helper.item.ItemStackBuilder;
 import me.hyfe.helper.menu.gui.Gui;
 import me.hyfe.helper.menu.item.Item;
 
 import java.util.function.UnaryOperator;
 
-public class GuiItemKey extends ItemKey {
+public class GuiItemKey extends ConfigKey<Item.Builder> {
 
     public GuiItemKey(Class<? extends KeysHolder> keysHolder, String key) {
         super(keysHolder, key);
@@ -17,12 +18,13 @@ public class GuiItemKey extends ItemKey {
         return new GuiItemKey(keysHolder, key);
     }
 
-    public Item.Builder getBuilder() {
-        return Item.builder(super.get());
+    @Override
+    public Item.Builder get() {
+        return Item.builder(ItemStackBuilder.of(this.getConfig(), this.getKey().concat(".item")).build());
     }
 
     public void toGui(Gui gui, UnaryOperator<Item.Builder> builder) {
-        Item item = builder.apply(this.getBuilder()).build();
+        Item item = builder.apply(this.get()).build();
         int slot = this.getConfig().tryGet(this.getKey().concat(".slot"));
         gui.setItem(item, slot);
     }

@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 public final class ItemStackBuilder {
     private static final ItemFlag[] ALL_FLAGS = new ItemFlag[]{
@@ -36,27 +37,29 @@ public final class ItemStackBuilder {
     }
 
     public static ItemStackBuilder of(Config config, String path) {
-        System.out.println(Arrays.toString(config.keys().toArray(new String[0])));
+        UnaryOperator<String> pathFunc = (string) -> path + "." + string;
         ItemStackBuilder builder = new ItemStackBuilder(new ItemStack(Material.DIRT)).hideAttributes();
-        String[] type = config.<String>tryGet(path.concat(".type")).split(":");
+        String[] type = config.<String>tryGet(pathFunc.apply("type")).split(":");
         if (type[0].equalsIgnoreCase("head")) {
             builder.head(type[1]);
         } else {
-            builder.type(Material.valueOf(type[0]));
+            builder.type(Material.valueOf(type[0].toUpperCase()));
             if (type.length > 1) {
                 builder.data(Integer.parseInt(type[1]));
             }
         }
-        if (config.has("name")) {
-            builder.name(config.tryGet("name"));
+        if (config.has(pathFunc.apply("name"))) {
+            builder.name(config.tryGet(pathFunc.apply("name")));
         }
-        if (config.has("lore")) {
-            builder.lore(config.<List<String>>tryGet("lore"));
+        if (config.has(pathFunc.apply("lore"))) {
+            builder.lore(config.<List<String>>tryGet(pathFunc.apply("lore")));
         }
-        if (config.has("amount")) {
+        if (config.has(pathFunc.apply("amount"))) {
+            builder.amount(config.tryGet(pathFunc.apply("amount")));
+        } else {
             builder.amount(1);
         }
-        if (config.has("glow") && config.<Boolean>tryGet("glow")) {
+        if (config.has(pathFunc.apply("glow")) && config.<Boolean>tryGet(pathFunc.apply("glow"))) {
             builder.glow();
         }
         return builder;

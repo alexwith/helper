@@ -95,9 +95,6 @@ public abstract class Gui implements InventoryHolder, TerminableConsumer {
     }
 
     public Slot getSlot(int slot) {
-        if (!this.valid) {
-            return null;
-        }
         return this.slots.computeIfAbsent(slot, (id) -> new Slot(this, id));
     }
 
