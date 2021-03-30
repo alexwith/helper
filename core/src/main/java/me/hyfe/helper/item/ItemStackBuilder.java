@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import me.hyfe.helper.config.Config;
 import me.hyfe.helper.text.Text;
+import me.hyfe.helper.text.replacer.Replacer;
 import me.hyfe.helper.version.ServerVersion;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -15,7 +16,11 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
@@ -206,6 +211,10 @@ public final class ItemStackBuilder {
     }
 
     public ItemStack build() {
+        return this.build(null);
+    }
+
+    public ItemStack build(Replacer replacer) {
         return this.itemStack;
     }
 }

@@ -1,6 +1,8 @@
 package me.hyfe.helper.menu.item;
 
 import com.google.common.collect.ImmutableMap;
+import me.hyfe.helper.text.Text;
+import me.hyfe.helper.text.replacer.Replacer;
 import me.hyfe.helper.utils.Delegates;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -93,7 +95,11 @@ public class Item {
         }
 
         public Item build() {
-            return new Item(this.handlers, this.itemStack);
+            return this.build(null);
+        }
+
+        public Item build(Replacer replacer) {
+            return new Item(this.handlers, Text.colorize(this.itemStack, replacer));
         }
     }
 

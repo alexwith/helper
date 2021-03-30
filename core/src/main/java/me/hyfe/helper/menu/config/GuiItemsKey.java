@@ -5,6 +5,7 @@ import me.hyfe.helper.config.keys.ConfigKey;
 import me.hyfe.helper.item.ItemStackBuilder;
 import me.hyfe.helper.menu.gui.Gui;
 import me.hyfe.helper.menu.item.Item;
+import me.hyfe.helper.text.replacer.Replacer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +31,13 @@ public class GuiItemsKey extends ConfigKey<List<Item.Builder>> {
     }
 
     public void toGui(Gui gui, UnaryOperator<Item.Builder> modifier) {
+        this.toGui(gui, modifier, null);
+    }
+
+    public void toGui(Gui gui, UnaryOperator<Item.Builder> modifier, Replacer replacer) {
         for (String key : this.getConfig().getKeys(this.getKey())) {
             Item.Builder builder = Item.builder(ItemStackBuilder.of(this.getConfig(), this.getKey() + "." + key + ".item").build());
-            Item item = modifier.apply(builder).build();
+            Item item = modifier.apply(builder).build(replacer);
             int slot = this.getConfig().tryGet(this.getKey() + "." + key + ".slot");
             gui.setItem(item, slot);
         }

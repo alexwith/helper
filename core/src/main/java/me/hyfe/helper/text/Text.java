@@ -28,6 +28,9 @@ public class Text {
     }
 
     public static ItemStack colorize(ItemStack itemStack, Replacer replacer) {
+        if (replacer == null) {
+            return itemStack;
+        }
         ItemStack item = itemStack.clone();
         ItemMeta meta = item.getItemMeta();
         if (meta == null) {
@@ -35,6 +38,7 @@ public class Text {
         }
         meta.setDisplayName(colorize(meta.getDisplayName(), replacer));
         meta.setLore(colorize(meta.getLore(), replacer));
+        item.setItemMeta(meta);
         return item;
     }
 
@@ -45,7 +49,6 @@ public class Text {
     public static List<String> colorize(Collection<String> collection, Replacer replacer) {
         return collection.stream().map((string) -> colorize(string, replacer)).collect(Collectors.toList());
     }
-
 
     public static String colorize(String string) {
         return colorize(string, null);
