@@ -38,4 +38,10 @@ public class ConfigController {
             this.configs.put(config.getName(), config);
         }
     }
+
+    public void registerConfigs(Config... configs) {
+        for (Config config : configs) {
+            this.configs.put(config.getName(), config);
+        }
+    }
 }
